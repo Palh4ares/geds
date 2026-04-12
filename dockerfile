@@ -1,23 +1,28 @@
 FROM php:8.2-cli
 
-# Instalar extensões necessárias
-RUN docker-php-ext-install pdo pdo_mysql
-
 # Instalar dependências do sistema
-RUN apt-get update && apt-get install -y unzip git curl
-
-# Copiar projeto
-COPY . /app
-WORKDIR /app
+RUN apt-get update && apt-get install -y \
+    unzip \
+    git \
+    curl \
+    libzip-dev \
+    && docker-php-ext-install zip pdo pdo_mysql
 
 # Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instalar dependências do Laravel
-RUN php composer.phar install --no-dev --optimize-autoloader
+# Copiar projeto
+WORKDIR /app
+COPY . .
 
-# Permissões (importante)
-RUN chmod -R 777 storage bootstrap/cache
+# Instalar dependências Laravel
+RUN composer install --no-dev --optimize-autoloader
 
-# Rodar app
-CMD php artisan migrate:fresh --force && php artisan serve --host=0.0.0.0 --port=$PORT
+# Permissões
+RUN chmod -R 775 storage bootstrap/cache
+
+# Rodar Laravel
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan migrate --force && \
+    php artisan serve --host=0.0.0.0 --port=$PORT
