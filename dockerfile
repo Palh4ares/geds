@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Instalar dependências do sistema
+# Instalar extensões necessárias
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
@@ -15,13 +15,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-# Instalar dependências Laravel
+# Instalar dependências
 RUN composer install --no-dev --optimize-autoloader
 
-# Permissões
+# Permissões Laravel
 RUN chmod -R 775 storage bootstrap/cache
 
-# Rodar Laravel
+# Rodar app
 CMD php artisan config:clear && \
     php artisan cache:clear && \
     php artisan migrate --force && \
