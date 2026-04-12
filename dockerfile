@@ -28,4 +28,4 @@ RUN chmod -R 777 storage bootstrap/cache
 CMD php artisan config:clear && \
     php artisan cache:clear && \
     php artisan migrate --force && \
-    php -S 0.0.0.0:$PORT -t public
+    php -S 0.0.0.0:8080 -t public
