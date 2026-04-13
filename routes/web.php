@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessoController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\Admin\UsuarioController;
+
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -56,4 +58,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('usuarios/{usuario}/reenviar',
             [UsuarioController::class, 'reenviarVerificacao'])->name('usuarios.reenviar');
     });
+});
+Route::get('/clear', function () {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    return 'Tudo limpo!';
 });
