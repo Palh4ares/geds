@@ -323,7 +323,6 @@ setTimeout(() => {
 // File drop
 document.querySelectorAll('.file-drop').forEach(drop => {
   const input = drop.querySelector('input[type=file]');
-  drop.addEventListener('click', () => input?.click());
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
   drop.addEventListener('drop', e => {
